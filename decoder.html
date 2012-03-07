@@ -1,0 +1,288 @@
+<html>
+<body>
+<img src="canvas2.png">
+<script type="text/javascript">
+var contextNode=null;
+function base64_encode (data,isutf8) {
+    // Encodes string using MIME base64 algorithm  
+    // 
+    // version: 1109.2015
+    // discuss at: http://phpjs.org/functions/base64_encode    // +   original by: Tyler Akins (http://rumkin.com)
+    // +   improved by: Bayron Guevara
+    // +   improved by: Thunder.m
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Pellentesque Malesuada    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Rafał Kukawski (http://kukawski.pl)
+    // -    depends on: utf8_encode
+    // *     example 1: base64_encode('Kevin van Zonneveld');
+    // *     returns 1: 'S2V2aW4gdmFuIFpvbm5ldmVsZA=='    // mozilla has this native
+    // - but breaks in 2.0.0.12!
+    //if (typeof this.window['atob'] == 'function') {
+    //    return atob(data);
+    //} 
+     var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+        ac = 0,
+        enc = "",
+        tmp_arr = []; 
+    if (!data) {
+        return data;
+    }
+    do { // pack three octets into four hexets
+        o1 = data.charCodeAt(i++);
+        o2 = data.charCodeAt(i++);
+        o3 = data.charCodeAt(i++);
+ 
+        bits = o1 << 16 | o2 << 8 | o3;
+ 
+        h1 = bits >> 18 & 0x3f;        h2 = bits >> 12 & 0x3f;
+        h3 = bits >> 6 & 0x3f;
+        h4 = bits & 0x3f;
+ 
+        // use hexets to index into b64, and append result to encoded string 
+        tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+    } while (i < data.length);
+ 
+    enc = tmp_arr.join('');
+        var r = data.length % 3;
+    
+    return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+}
+function getName(rng,imageData,newData,deletedbytes)
+{
+var randnum=Math.floor(rng()*newData.length);
+var redIndex=randnum-(randnum%4);
+var name="";
+if(newData[redIndex]==-1)
+{
+return getName(rng,imageData,newData,deletedbytes);
+}
+len=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
+newData[redIndex]=-1;
+deletedbytes++;
+for(var i=0;i<len;i++)
+{
+var randnum=Math.floor(rng()*newData.length);
+var redIndex=randnum-(randnum%4);
+
+if(newData[redIndex]==-1)
+{
+i--;
+continue;
+}
+byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
+name+=String.fromCharCode(byte);
+newData[redIndex]=-1;
+deletedbytes++;
+}
+return {"name":name,"newData":newData,"deletedbytes":deletedbytes}
+}
+function getBodyLength(rng,imageData,newData,deletedbytes)
+{
+var len=0;
+for(var i=0;i<=7;i++)
+{
+var randnum=Math.floor(rng()*newData.length);
+var redIndex=randnum-(randnum%4);
+if(newData[redIndex]==-1)
+{
+i--;
+continue;
+}
+byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
+len|=byte<<(i*8);
+newData[redIndex]=-1;
+deletedbytes++;
+}
+return {"len":len,"newData":newData,"deletedbytes":deletedbytes}
+}
+function makeString(arr,num)
+{
+retStr="";
+for(var i=0;i<num;i++)
+{
+retStr+=String.fromCharCode(arr[i])
+}
+return retStr;
+}
+function getNum(num)
+{
+var ret=0;
+for(var i=num.length-1;i>=0;i--)
+{
+ret|=num[i]<<(i*8)
+}
+return ret;
+}
+// From http://baagoe.com/en/RandomMusings/javascript/
+// Johannes Baagøe <baagoe@baagoe.com>, 2010
+function Mash() {
+  var n = 0xefc8249d;
+
+  var mash = function(data) {
+    data = data.toString();
+    for (var i = 0; i < data.length; i++) {
+      n += data.charCodeAt(i);
+      var h = 0.02519603282416938 * n;
+      n = h >>> 0;
+      h -= n;
+      h *= n;
+      n = h >>> 0;
+      h -= n;
+      n += h * 0x100000000; // 2^32
+    }
+    return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+  };
+
+  mash.version = 'Mash 0.9';
+  return mash;
+}
+function Alea() {
+  return (function(args) {
+    // Johannes Baagøe <baagoe@baagoe.com>, 2010
+    var s0 = 0;
+    var s1 = 0;
+    var s2 = 0;
+    var c = 1;
+
+    if (args.length == 0) {
+      args = [+new Date];
+    }
+    var mash = Mash();
+    s0 = mash(' ');
+    s1 = mash(' ');
+    s2 = mash(' ');
+
+    for (var i = 0; i < args.length; i++) {
+      s0 -= mash(args[i]);
+      if (s0 < 0) {
+        s0 += 1;
+      }
+      s1 -= mash(args[i]);
+      if (s1 < 0) {
+        s1 += 1;
+      }
+      s2 -= mash(args[i]);
+      if (s2 < 0) {
+        s2 += 1;
+      }
+    }
+    mash = null;
+
+    var random = function() {
+      var t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+      s0 = s1;
+      s1 = s2;
+      return s2 = t - (c = t | 0);
+    };
+    random.uint32 = function() {
+      return random() * 0x100000000; // 2^32
+    };
+    random.fract53 = function() {
+      return random() + 
+        (random() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
+    };
+    random.version = 'Alea 0.9';
+    random.args = args;
+    return random;
+
+  } (Array.prototype.slice.call(arguments)));
+};
+
+function doThings()
+{
+if(!contextNode)
+{
+return;
+}
+var canvas = null,
+ctx = null,
+canvas = document.createElement("canvas");
+// the canvas should not be visible
+canvas.style.display = "none";
+var b = document.getElementsByTagName("body")[0];
+b.appendChild(canvas);
+ctx = canvas.getContext("2d");
+var img = contextNode;
+// apply the width and height to the canvas element
+canvas.width = img.width;
+canvas.height = img.height;
+// draw the image into the canvas element
+ctx.drawImage(img, 0, 0);
+var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+var imageData = image.data;
+var length = imageData.length;
+var newData= new Array();
+var width = canvas.width;
+var pass=prompt("please enter a password");
+var passhash=0;
+var rng = new Alea(pass); 
+for(var i = 0; i<length; i++)
+{
+newData[i]=i;
+}
+var bytes=Array();
+var deletedbytes=0;
+var skips=0;
+var name="";
+var retObj=getName(rng,imageData,newData,deletedbytes);
+newData=retObj.newData;
+deletedbytes=retObj.deletedbytes;
+name=retObj["name"];
+shouldDl=confirm("want to download file with name: "+name+"?");
+var body="";
+if(!shouldDl)
+{
+return;
+}
+retObj=getBodyLength(rng,imageData,newData,deletedbytes);
+newData=retObj.newData;
+len=retObj["len"];
+for(var i = 0; i < len; i++){
+var randnum=Math.floor(rng()*newData.length);
+var redIndex=randnum-(randnum%4);
+
+if(newData[redIndex]==-1)
+{
+i--;
+continue;
+}
+byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
+body+=String.fromCharCode(byte);
+newData[redIndex]=-1;
+deletedbytes++;
+}
+var base64string=base64_encode(body,true);
+url="data:application/octet-stream;base64,"+base64string;
+var theif=document.createElement("iframe");
+theif.style.display="none";
+theif.src=url;
+document.getElementsByTagName("body")[0].appendChild(theif);
+}
+if(!document.getElementById("dropdown"))
+{
+
+themen=document.createElement("menu");
+themen.type="context";
+themen.id="dropdown";
+themenitem=document.createElement("menuitem");
+themenitem.label="Get Steganographic Data";
+themenitem.addEventListener("click",function(event)
+{
+doThings();
+},false);
+themen.appendChild(themenitem);
+document.getElementsByTagName("body")[0].appendChild(themen);
+var images=document.getElementsByTagName("img");
+for(var i=0;i<images.length;i++)
+{
+images[i].setAttribute("contextmenu","dropdown");
+images[i].addEventListener("contextmenu",function(event)
+{
+contextNode=this;
+},false);
+}
+}
+</script>
+</body>
+</html> 
