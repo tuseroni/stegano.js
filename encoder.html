@@ -180,11 +180,17 @@ var newData= new Array();
 var width = canvas.width;
 var pass=prompt("please enter a password");
 var rng = new Alea(pass); 
+var redIndicies=[];
 for(var i = 0; i<length; i++)
 {
 newData[i]=i;
 }
 var bytes=String.fromCharCode(nameLen)+fileName+getLengthInChars(fileLen)+file;
+if(imageData.length/4<bytes.length)
+{
+alert("innerFile too big")
+return;
+}
 for(var i = 0; i <= bytes.length; i++){
 var randnum=Math.floor(rng()*newData.length);
 var redIndex=randnum-(randnum%4);
@@ -193,19 +199,21 @@ if(newData[redIndex]==-1)
 i--;
 continue;
 }
+//redIndicies.push(redIndex);
 imageData[redIndex]=((imageData[redIndex] & (~7)) | ((bytes.charCodeAt(i)>>5)&7))
 imageData[redIndex+1]=((imageData[redIndex+1] & (~3)) | ((bytes.charCodeAt(i)>>3)&3))
 imageData[redIndex+2]=((imageData[redIndex+2] & (~7)) | ((bytes.charCodeAt(i))&7))
 newData[redIndex]=-1;
 }
+//alert(redIndicies);
 image.data=imageData;
 ctx.putImageData(image,0,0);
 canvas.style.display="";
 }
 </script>
-<body onload="doThings()">
-<p>select Outer Image:</p>
-<p><input type="file" id="img"></p>
+<body>
+<p>select Outer Image(PNG format):</p>
+<p><input type="file" id="img" accept="image/*"></p>
 <p>select innerFile:</p>
 <p><input type="file" id="file"></p>
 <button onclick="makeImg()">Do it!</button>

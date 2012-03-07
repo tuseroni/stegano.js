@@ -1,8 +1,30 @@
 <html>
 <body>
-<img src="canvas2.png">
+<input type="file" id="img" accept="image/png">
+<button onclick="makeImg()">Decode It</button>
 <script type="text/javascript">
 var contextNode=null;
+var redIndicies=[];
+function makeImg()
+{
+var outerImg=document.getElementById("img");
+if(!outerImg.files[0])
+{
+return;
+}
+var imgdat=outerImg.files[0];
+var reader = new FileReader();
+reader.onload=function(event)
+{
+var img=new Image; 
+img.onload=function()
+{
+doThings(this);
+}
+img.src=event.target.result;
+}
+reader.readAsDataURL(imgdat);
+}
 function base64_encode (data,isutf8) {
     // Encodes string using MIME base64 algorithm  
     // 
@@ -53,11 +75,13 @@ function getName(rng,imageData,newData,deletedbytes)
 var randnum=Math.floor(rng()*newData.length);
 var redIndex=randnum-(randnum%4);
 var name="";
+
 if(newData[redIndex]==-1)
 {
 return getName(rng,imageData,newData,deletedbytes);
 }
 len=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
+//redIndicies.push(redIndex);
 newData[redIndex]=-1;
 deletedbytes++;
 for(var i=0;i<len;i++)
@@ -70,6 +94,7 @@ if(newData[redIndex]==-1)
 i--;
 continue;
 }
+//redIndicies.push(redIndex);
 byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
 name+=String.fromCharCode(byte);
 newData[redIndex]=-1;
@@ -89,6 +114,7 @@ if(newData[redIndex]==-1)
 i--;
 continue;
 }
+//redIndicies.push(redIndex);
 byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
 len|=byte<<(i*8);
 newData[redIndex]=-1;
@@ -189,12 +215,8 @@ function Alea() {
   } (Array.prototype.slice.call(arguments)));
 };
 
-function doThings()
+function doThings(img)
 {
-if(!contextNode)
-{
-return;
-}
 var canvas = null,
 ctx = null,
 canvas = document.createElement("canvas");
@@ -203,7 +225,6 @@ canvas.style.display = "none";
 var b = document.getElementsByTagName("body")[0];
 b.appendChild(canvas);
 ctx = canvas.getContext("2d");
-var img = contextNode;
 // apply the width and height to the canvas element
 canvas.width = img.width;
 canvas.height = img.height;
@@ -238,6 +259,7 @@ return;
 retObj=getBodyLength(rng,imageData,newData,deletedbytes);
 newData=retObj.newData;
 len=retObj["len"];
+
 for(var i = 0; i < len; i++){
 var randnum=Math.floor(rng()*newData.length);
 var redIndex=randnum-(randnum%4);
@@ -247,11 +269,13 @@ if(newData[redIndex]==-1)
 i--;
 continue;
 }
+//redIndicies.push(redIndex);
 byte=((imageData[redIndex] & 7)<<5 | (imageData[redIndex+1] & 3)<<3 |(imageData[redIndex+2] & 7));
 body+=String.fromCharCode(byte);
 newData[redIndex]=-1;
 deletedbytes++;
 }
+//alert(redIndicies);
 var base64string=base64_encode(body,true);
 url="data:application/octet-stream;base64,"+base64string;
 var theif=document.createElement("iframe");
