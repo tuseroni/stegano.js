@@ -4,11 +4,14 @@ decoder.html takes a png with the name canvas.png (the ability to pick arbitrary
 
 the encoder uses a Pseudo-Random number generator seeded with a hash of a string which serves as the password. the same password must be used for decoding as was used for encoding.
 
+requires Firefox (dont know the minimum version, but just best to have the latest)
+
 still to do:
 . arbitrary data hidden inside audio files
 . arbitrary data hidden inside video files
 . clean up the page a bit (planning to move most of it to a webworker and use that to update a progress bar element, should also give a boost to performance and usability)
 . move a bunch of the code into a greasemonkey script (or BACK into a greasemonkey script)
+. make it work in chrome and maybe ie9 or 10
 . celebrate
 
 wish i could do:
