@@ -15,3 +15,13 @@ wish i could do:
 . use some other image format than png for the cover image, but all images are converted to png by the canvas tag
 . suggest a name for the download (i wish base64 uris had a filename hint optional part, something to tell the browser "try this filename when saving this file" so like (data:|foo.png;base64,data)
 
+credits:
+Chris McKenzie, his project:
+http://qaa.ath.cx/PiggyPack.html
+inspired me to make this (in fact the first version was a straight port of his ruby program with a bit of html5 flare)
+
+Patrick Wied his project:
+http://www.patrick-wied.at/static/nudejs/
+provided the code i needed to read the pixels from the cover image and for writing it back out to the canvas
+
+
