@@ -154,10 +154,10 @@ function doThings(img,file,fileName)
 {
 var fileLen=file.length;
 var nameLen=fileName.length;
-if(nameLen>255)
+if(nameLen>249)
 {
 nameLen=255;
-fileName=fileName.substr(0,255);
+fileName=fileName.substr(0,249)+"~"+fileName.substr(-5);
 }
 var canvas = null,
 ctx = null,
