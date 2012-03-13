@@ -1,0 +1,138 @@
+<html>
+<script type="text/javascript" src="php.default.min.js"></script>
+<script type="text/javascript">
+function makeImg()
+{
+var outerImg=document.getElementById("img");
+if(!outerImg.files[0])
+{
+return;
+}
+var imgdat=outerImg.files[0];
+var reader = new FileReader();
+reader.onload=function(event)
+{
+try
+{
+headerObj=readHeader(event.target.result);
+bodyArr=readBody(event.target.result,headerObj);
+var nums=[];
+for(var i=0;i<100;i++)
+{
+nums.push(bodyArr[0][i]);
+}
+alert(nums);
+}
+catch(e)
+{
+alert(e);
+}
+}
+reader.readAsBinaryString(imgdat);
+}
+function readHeader(file)
+{
+var index=0;
+var retObj={"index":index};
+if(getString(file,retObj.index,4)!="RIFF")
+{
+throw("RIFF file format not detected");
+}
+retObj.index+=4;
+retObj.index+=4;//dont need to read the length here
+if(getString(file,retObj.index,4)!="WAVE")
+{
+throw("RIFF file format not detected");
+}
+retObj.index+=4;
+if(getString(file,retObj.index,4)!="fmt ")
+{
+throw("RIFF file format not detected");
+}
+retObj.index+=4;
+if (file.charCodeAt(retObj.index) != 16 || file.charCodeAt(retObj.index+1) || file.charCodeAt(retObj.index+2) || file.charCodeAt(retObj.index+3)) {
+throw("PCM format not detected");
+}
+retObj.index+=4;
+if (file.charCodeAt(retObj.index) != 1 || file.charCodeAt(retObj.index+1)) {
+throw("PCM format not detected");
+}
+retObj.index+=2;
+retObj.channels=getLittleEndianNum(file,retObj.index,2)
+retObj.index+=2;
+retObj.sampleRate=getLittleEndianNum(file,retObj.index,4)
+retObj.index+=4;
+retObj.byteRate=getLittleEndianNum(file,retObj.index,4)
+retObj.index+=4;
+retObj.blockAlign=getLittleEndianNum(file,retObj.index,2)
+retObj.index+=2;
+retObj.BPS=getLittleEndianNum(file,retObj.index,2)
+retObj.index+=2;
+if(retObj.byteRate != ((retObj.sampleRate * retObj.channels * retObj.BPS) >> 3))
+{
+throw("wtf!");
+}
+if(retObj.blockAlign != ((retObj.channels * retObj.BPS) >> 3))
+{
+throw("wtf mate!");
+}
+if(getString(file,retObj.index,4)!="data")
+{
+throw("RIFF file format not detected");
+}
+retObj.index+=4;
+retObj.subChunkSize=getLittleEndianNum(file,retObj.index,4)
+retObj.index+=4;
+retObj.num_samp = (retObj.subChunkSize << 3) / (retObj.channels * retObj.BPS);
+return retObj;
+}
+function readBody(file,headerObj)
+{
+var buffer;
+var data=[];
+data[0]=new Int32Array(headerObj.num_samp);
+data[1]=new Int32Array(headerObj.num_samp);
+
+for (var i=0; i != headerObj.num_samp; ++i) {
+for (var j=0; j != headerObj.channels; ++j) {
+var tmp = 0;
+for (var k=0; k != headerObj.BPS; k+=8) {
+buffer=file.charCodeAt(headerObj.index);
+tmp += buffer << k;
+headerObj.index++;
+}
+
+data[j][i] = conv_bit_size(tmp, headerObj.BPS);
+}
+}
+return data;
+}
+function conv_bit_size(bytes,bps)
+{
+var max = (1 << (bps-1)) - 1;
+return ((bytes > max)?bytes - (max<<1) : bytes);
+}
+function getLittleEndianNum(buffer,index,length)
+{
+var num=0;
+for(var x=index,u=0;x<index+length;x++,u++)
+{
+num+=buffer.charCodeAt(x)<<(8*u);
+}
+return num;
+}
+function getString(buffer,start,length)
+{
+var retbuff=""
+for(var x=start;x<start+length;x++)
+{
+retbuff+=buffer[x];
+}
+return retbuff;
+}
+</script>
+<body>
+<p><input type="file" id="img"></p>
+<button onclick="makeImg()">Do it!</button>
+</body>
+</html>
