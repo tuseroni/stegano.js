@@ -252,30 +252,30 @@ alert("innerFile too big: "+(bodyArr.length/4)+": "+bytes.length)
 return;
 }
 var skipped=0;
-	for(var i = 0; i <= bytes.length; i++)
-	{
-	var randnum=Math.floor(rng()*bodyArr[0].length);
-	randnum=randnum-(randnum%4);
-	var randByte=bytes.charCodeAt(i);
-	if(newData[randnum]==-1)
-	{
-	if(skipped>10000000)
-	{
-	throw("your hands up");
-	}
-	i--;
-	skipped++;
-	continue;
-	}
-	for(var y=0;y<bodyArr.length;y++)
-	{
-	bodyArr[y][randnum]=((bodyArr[y][randnum] & (~3)) | ((randByte >> 6)&3));
-	bodyArr[y][randnum+1]=((bodyArr[y][randnum+1] & (~3)) | ((randByte>>4)&3));
-	bodyArr[y][randnum+2]=((bodyArr[y][randnum+2] & (~3)) | ((randByte>>2)&3));
-	bodyArr[y][randnum+3]=((bodyArr[y][randnum+3] & (~3)) | ((randByte)&3));
-	}
-	newData[randnum]=-1
-	}
+// 	for(var i = 0; i <= bytes.length; i++)
+// 	{
+// 	var randnum=Math.floor(rng()*bodyArr[0].length);
+// 	randnum=randnum-(randnum%4);
+// 	var randByte=bytes.charCodeAt(i);
+// 	if(newData[randnum]==-1)
+// 	{
+// 	if(skipped>10000000)
+// 	{
+// 	throw("your hands up");
+// 	}
+// 	i--;
+// 	skipped++;
+// 	continue;
+// 	}
+// 	for(var x=3,u=0;x>=0;x++,u++)
+// 	{
+// 	for(var y=0;y<bodyArr.length;y++)
+// 	{	
+// 	bodyArr[y][randnum+u]=((bodyArr[y][randnum+u] & (~3)) | ((randByte >> x*2)&3));
+// 	}
+// 	}
+// 	newData[randnum]=-1
+// 	}
 	for(var x=0;x<bodyArr[0].length;x++)
 	{
 	for(var y=0;y<bodyArr.length;y++)
