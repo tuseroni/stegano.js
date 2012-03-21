@@ -1,6 +1,9 @@
 a javascript and HTML based steganography encoder/decoder.
+
 encoder.html takes a .png file as the cover and any file data file as the hidden data. the hidden data cannot be bigger than the width*the height of the cover image (in bytes)
+
 decoder.html takes an encoded png selected by the user and extracts the data from the image.
+
 
 the encoder uses a Pseudo-Random number generator seeded with a hash of a string which serves as the password. the same password must be used for decoding as was used for encoding.
 
