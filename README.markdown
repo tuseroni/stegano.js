@@ -1,0 +1,25 @@
+a javascript and HTML based steganography encoder/decoder.
+encoder.html takes a .png file as the cover and any file data file as the hidden data. the hidden data cannot be bigger than the width*the height of the cover image (in bytes)
+decoder.html takes an encoded png selected by the user and extracts the data from the image.
+
+the encoder uses a Pseudo-Random number generator seeded with a hash of a string which serves as the password. the same password must be used for decoding as was used for encoding.
+
+requires Firefox (dont know the minimum version, but just best to have the latest)
+
+still to do:
+* arbitrary data hidden inside audio files
+* arbitrary data hidden inside video files
+* clean up the page a bit (planning to move most of it to a webworker and use that to update a progress bar element, should also give a boost to performance and usability)
+* move a bunch of the code into a greasemonkey script (or BACK into a greasemonkey script)
+* make it work in chrome and maybe ie9 or 10
+* celebrate
+
+wish i could do:
+* use some other image format than png for the cover image, but all images are converted to png by the canvas tag
+* suggest a name for the download (i wish base64 uris had a filename hint optional part, something to tell the browser "try this filename when saving this file" so like (data:|foo.png;base64,data)
+
+_credits_:
+1 Chris McKenzie, his project piggyback(http://qaa.ath.cx/PiggyPack.html) inspired me to make this (in fact the first version was a straight port of his ruby program with a bit of html5 flare)
+2 Patrick Wied his project nudejs(http://www.patrick-wied.at/static/nudejs/) provided the code i needed to read the pixels from the cover image and for writing it back out to the canvas
+
+
