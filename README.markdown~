@@ -7,6 +7,7 @@ the encoder uses a Pseudo-Random number generator seeded with a hash of a string
 requires Firefox (dont know the minimum version, but just best to have the latest)
 
 still to do:
+
 * arbitrary data hidden inside audio files
 * arbitrary data hidden inside video files
 * clean up the page a bit (planning to move most of it to a webworker and use that to update a progress bar element, should also give a boost to performance and usability)
@@ -15,6 +16,7 @@ still to do:
 * celebrate
 
 wish i could do:
+
 * use some other image format than png for the cover image, but all images are converted to png by the canvas tag
 * suggest a name for the download (i wish base64 uris had a filename hint optional part, something to tell the browser "try this filename when saving this file" so like (data:|foo.png;base64,data)
 
