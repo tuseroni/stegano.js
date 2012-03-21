@@ -24,6 +24,7 @@ wish i could do:
 * suggest a name for the download (i wish base64 uris had a filename hint optional part, something to tell the browser "try this filename when saving this file" so like (data:|foo.png;base64,data)
 
 _credits_:
+
 1 Chris McKenzie, his project piggyback(http://qaa.ath.cx/PiggyPack.html) inspired me to make this (in fact the first version was a straight port of his ruby program with a bit of html5 flare)
 2 Patrick Wied his project nudejs(http://www.patrick-wied.at/static/nudejs/) provided the code i needed to read the pixels from the cover image and for writing it back out to the canvas
 

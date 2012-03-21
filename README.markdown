@@ -25,7 +25,7 @@ wish i could do:
 
 _credits_:
 
-1 Chris McKenzie, his project piggyback(http://qaa.ath.cx/PiggyPack.html) inspired me to make this (in fact the first version was a straight port of his ruby program with a bit of html5 flare)
-2 Patrick Wied his project nudejs(http://www.patrick-wied.at/static/nudejs/) provided the code i needed to read the pixels from the cover image and for writing it back out to the canvas
+1.	Chris McKenzie, his project [piggyback](http://qaa.ath.cx/PiggyPack.html) inspired me to make this (in fact the first version was a straight port of his ruby program with a bit of html5 flare)
+2.	 Patrick Wied his project [nudejs](http://www.patrick-wied.at/static/nudejs/) provided the code i needed to read the pixels from the cover image and for writing it back out to the canvas
 
 
